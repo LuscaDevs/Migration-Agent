@@ -25,6 +25,7 @@ public class OpenRewriteEngineExecutor {
             JavaParser javaParser = JavaParser.fromJavaVersion()
                     .build();
             MavenParser mavenParser = MavenParser.builder()
+                    .skipDependencyResolution(true)
                     .build();
 
             List<SourceFile> javaSourceFiles = javaParser.parse(

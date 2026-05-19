@@ -2,14 +2,16 @@ package com.luscadevs.migrationagent.webhook.service;
 
 import java.time.LocalDateTime;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import lombok.extern.slf4j.Slf4j;
 import tools.jackson.databind.JsonNode;
 
 @Service
-@Slf4j
 public class GithubWebhookService {
+
+    private static final Logger log = LoggerFactory.getLogger(GithubWebhookService.class);
 
     public void process(String event, String signature, JsonNode payload) {
         String repository = extractRepositoryName(payload);

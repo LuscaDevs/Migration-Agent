@@ -5,14 +5,16 @@ import org.springframework.stereotype.Component;
 import com.luscadevs.migrationagent.github.domain.GithubEventType;
 import com.luscadevs.migrationagent.webhook.dto.IssueCommentWebhookRequest;
 
-import lombok.RequiredArgsConstructor;
 import tools.jackson.databind.ObjectMapper;
 
 @Component
-@RequiredArgsConstructor
 public class WebhookPayloadMapper {
 
     private final ObjectMapper objectMapper;
+
+    public WebhookPayloadMapper(ObjectMapper objectMapper) {
+        this.objectMapper = objectMapper;
+    }
 
     public Object map(String rawPayload, GithubEventType eventType) {
         try {

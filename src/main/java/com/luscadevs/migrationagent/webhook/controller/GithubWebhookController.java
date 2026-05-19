@@ -11,27 +11,28 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.luscadevs.migrationagent.webhook.application.ProcessWebhookUseCase;
 
-import lombok.RequiredArgsConstructor;
-
 @RestController
 @RequestMapping("/api/github")
-@RequiredArgsConstructor
 public class GithubWebhookController {
 
-    private final ProcessWebhookUseCase processWebhookUseCase;
+        private final ProcessWebhookUseCase processWebhookUseCase;
 
-    @PostMapping("/webhook")
-    public ResponseEntity<Map<String, String>> receiveWebhook(
-            @RequestHeader("X-GitHub-Event") String event,
-            @RequestHeader(value = "X-Hub-Signature-256", required = false) String signature,
-            @RequestBody String payload) {
+        public GithubWebhookController(ProcessWebhookUseCase processWebhookUseCase) {
+                this.processWebhookUseCase = processWebhookUseCase;
+        }
 
-        processWebhookUseCase.execute(
-                event,
-                signature,
-                payload);
+        @PostMapping("/webhook")
+        public ResponseEntity<Map<String, String>> receiveWebhook(
+                        @RequestHeader("X-GitHub-Event") String event,
+                        @RequestHeader(value = "X-Hub-Signature-256", required = false) String signature,
+                        @RequestBody String payload) {
 
-        return ResponseEntity.ok(
-                Map.of("status", "received"));
-    }
+                processWebhookUseCase.execute(
+                                event,
+                                signature,
+                                payload);
+
+                return ResponseEntity.ok(
+                                Map.of("status", "received"));
+        }
 }

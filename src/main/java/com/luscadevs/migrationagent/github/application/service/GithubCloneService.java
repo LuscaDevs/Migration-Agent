@@ -4,45 +4,46 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 import org.eclipse.jgit.api.Git;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import lombok.extern.slf4j.Slf4j;
-
-@Slf4j
 @Service
 public class GithubCloneService {
 
-    public Path cloneRepository(
-            String repository,
-            String token) {
+        private static final Logger log = LoggerFactory.getLogger(GithubCloneService.class);
 
-        try {
+        public Path cloneRepository(
+                        String repository,
+                        String token) {
 
-            Path tempDir = Files.createTempDirectory(
-                    "migration-agent-");
+                try {
 
-            String cloneUrl = "https://x-access-token:" +
-                    token +
-                    "@github.com/" +
-                    repository +
-                    ".git";
+                        Path tempDir = Files.createTempDirectory(
+                                        "migration-agent-");
 
-            Git.cloneRepository()
-                    .setURI(cloneUrl)
-                    .setDirectory(tempDir.toFile())
-                    .call();
+                        String cloneUrl = "https://x-access-token:" +
+                                        token +
+                                        "@github.com/" +
+                                        repository +
+                                        ".git";
 
-            log.info(
-                    "Repository cloned: {} -> {}",
-                    repository,
-                    tempDir);
+                        Git.cloneRepository()
+                                        .setURI(cloneUrl)
+                                        .setDirectory(tempDir.toFile())
+                                        .call();
 
-            return tempDir;
+                        log.info(
+                                        "Repository cloned: {} -> {}",
+                                        repository,
+                                        tempDir);
 
-        } catch (Exception ex) {
-            throw new RuntimeException(
-                    "Error cloning repository",
-                    ex);
+                        return tempDir;
+
+                } catch (Exception ex) {
+                        throw new RuntimeException(
+                                        "Error cloning repository",
+                                        ex);
+                }
         }
-    }
 }

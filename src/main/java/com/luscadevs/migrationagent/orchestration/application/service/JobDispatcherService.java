@@ -1,21 +1,25 @@
 package com.luscadevs.migrationagent.orchestration.application.service;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import com.luscadevs.migrationagent.github.domain.MigrationCommand;
 import com.luscadevs.migrationagent.orchestration.application.factory.JobFactory;
 import com.luscadevs.migrationagent.orchestration.domain.MigrationJob;
 
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-
-@Slf4j
 @Service
-@RequiredArgsConstructor
 public class JobDispatcherService {
+
+    private static final Logger log = LoggerFactory.getLogger(JobDispatcherService.class);
 
     private final JobFactory jobFactory;
     private final MigrationJobExecutor jobExecutor;
+
+    public JobDispatcherService(JobFactory jobFactory, MigrationJobExecutor jobExecutor) {
+        this.jobFactory = jobFactory;
+        this.jobExecutor = jobExecutor;
+    }
 
     public void dispatch(MigrationCommand command) {
 
