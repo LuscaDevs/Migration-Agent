@@ -3,7 +3,7 @@ package com.luscadevs.migrationagent.orchestration.application.service;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
-import com.luscadevs.migrationagent.github.application.service.GithubJwtService;
+import com.luscadevs.migrationagent.github.application.service.GithubInstallationTokenService;
 import com.luscadevs.migrationagent.orchestration.domain.MigrationJob;
 
 import lombok.extern.slf4j.Slf4j;
@@ -11,10 +11,10 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Service
 public class MigrationJobExecutor {
-    private final GithubJwtService githubJwtService;
+    private final GithubInstallationTokenService githubInstallationTokenService;
 
-    public MigrationJobExecutor(GithubJwtService githubJwtService) {
-        this.githubJwtService = githubJwtService;
+    public MigrationJobExecutor(GithubInstallationTokenService githubInstallationTokenService) {
+        this.githubInstallationTokenService = githubInstallationTokenService;
     }
 
     @Async
@@ -23,11 +23,13 @@ public class MigrationJobExecutor {
         try {
             job.markRunning();
 
-            String jwt = githubJwtService.generateJwt();
+            String token = githubInstallationTokenService
+                    .generateInstallationToken(
+                            job.installationId());
 
             log.info(
-                    "GitHub JWT generated: {}...",
-                    jwt.substring(0, 30));
+                    "Installation token generated: {}...",
+                    token.substring(0, 20));
 
             log.info("Job started: {}", job.id());
 

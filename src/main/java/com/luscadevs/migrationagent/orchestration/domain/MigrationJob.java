@@ -10,6 +10,7 @@ public class MigrationJob {
     private final String repository;
     private final String requester;
     private final String targetVersion;
+    private final Long installationId;
     private final LocalDateTime createdAt;
 
     private JobStatus status;
@@ -20,6 +21,7 @@ public class MigrationJob {
             String repository,
             String requester,
             String targetVersion,
+            Long installationId,
             LocalDateTime createdAt,
             JobStatus status) {
         this.id = id;
@@ -27,12 +29,17 @@ public class MigrationJob {
         this.repository = repository;
         this.requester = requester;
         this.targetVersion = targetVersion;
+        this.installationId = installationId;
         this.createdAt = createdAt;
         this.status = status;
     }
 
     public UUID id() {
         return id;
+    }
+
+    public Long installationId() {
+        return installationId;
     }
 
     public JobType type() {

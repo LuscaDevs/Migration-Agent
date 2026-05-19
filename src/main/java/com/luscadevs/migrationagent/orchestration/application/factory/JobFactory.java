@@ -21,6 +21,7 @@ public class JobFactory {
                 command.context().repository(),
                 command.context().requester(),
                 command.targetVersion(),
+                command.context().installationId(),
                 LocalDateTime.now(),
                 JobStatus.CREATED);
     }
