@@ -8,6 +8,8 @@ import org.springframework.stereotype.Service;
 import com.luscadevs.migrationagent.github.application.service.GithubCloneService;
 import com.luscadevs.migrationagent.github.application.service.GithubInstallationTokenService;
 import com.luscadevs.migrationagent.orchestration.domain.MigrationJob;
+import com.luscadevs.migrationagent.orchestration.domain.ProjectMetadata;
+import com.luscadevs.migrationagent.rewrite.infrastructure.OpenRewriteMigrationEngine;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -16,11 +18,16 @@ import lombok.extern.slf4j.Slf4j;
 public class MigrationJobExecutor {
     private final GithubInstallationTokenService githubInstallationTokenService;
     private final GithubCloneService githubCloneService;
+    private final ProjectAnalyzerService projectAnalyzerService;
+    private final OpenRewriteMigrationEngine migrationEngine;
 
     public MigrationJobExecutor(GithubInstallationTokenService githubInstallationTokenService,
-            GithubCloneService githubCloneService) {
+            GithubCloneService githubCloneService, ProjectAnalyzerService projectAnalyzerService,
+            OpenRewriteMigrationEngine migrationEngine) {
         this.githubInstallationTokenService = githubInstallationTokenService;
         this.githubCloneService = githubCloneService;
+        this.projectAnalyzerService = projectAnalyzerService;
+        this.migrationEngine = migrationEngine;
     }
 
     @Async
@@ -45,6 +52,17 @@ public class MigrationJobExecutor {
                     "Repository available at {}",
                     repoPath);
 
+            ProjectMetadata metadata = projectAnalyzerService.analyze(
+                    repoPath);
+
+            log.info(
+                    "Detected project | buildTool={} | java={} | springBoot={} | jaxRs={}",
+                    metadata.buildTool(),
+                    metadata.javaVersion(),
+                    metadata.springBootProject(),
+                    metadata.jaxRsProject());
+
+            migrationEngine.migrate(repoPath, metadata);
             log.info("Job started: {}", job.id());
 
             Thread.sleep(3000);
